@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin — ONAR GOLD WISDOM</title>
+<link rel="icon" type="image/png" href="images/sitelogo.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box;margin:0}body{font-family:Inter,sans-serif;background:#170D1A;color:#F8F4E9;padding:24px;max-width:1000px;margin:auto;font-weight:300}
+h1{color:#F6DBC0;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:32px}input,select{background:rgba(0,0,0,.3);border:1px solid rgba(246,219,192,.18);color:#F8F4E9;padding:13px 18px;border-radius:999px;width:100%;margin:6px 0;font-family:Inter,sans-serif}
+button{background:linear-gradient(135deg,#F6DBC0,#D8A878);border:none;padding:12px 24px;border-radius:999px;font-weight:500;cursor:pointer;color:#26162B;font-family:Inter,sans-serif;letter-spacing:.5px}
+.card{background:linear-gradient(165deg,#2E1A34,#26162B);border:1px solid rgba(246,219,192,.14);border-radius:20px;padding:20px;margin:14px 0}
+.row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.badge{font-size:11px;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.1);letter-spacing:1px}.badge.new{background:#25D366;color:#0a1}.badge.done{background:#F6DBC0;color:#26162B}
+.del{background:#7a2230;color:#fff;padding:7px 14px}.done-btn{background:#1da851;color:#fff;padding:7px 14px}
+#loginBox{max-width:400px;margin:80px auto;text-align:center}.hidden{display:none}
+small{color:#C9BACB}
+a{color:#F6DBC0}</style></head>
+<body>
+<div id="loginBox">
+  <img src="images/sitelogo.png" alt="logo" style="width:88px;height:88px;border-radius:50%;object-fit:contain;border:1px solid rgba(246,219,192,.35);background:rgba(255,255,255,.04);padding:4px">
+  <h1>🔐 ONAR Admin</h1><p><small>Vimesh ji — password daliye (default: onar123)</small></p>
+  <input type="password" id="pw" placeholder="Password"><br><br>
+  <button onclick="login()">Login</button>
+  <p><small><a href="/">← Website par wapas</a></small></p>
+</div>
+<div id="panel" class="hidden">
+  <div class="row"><h1>📋 Bookings</h1><button onclick="load()">↻ Refresh</button></div>
+  <p><small>Total bookings neeche hain — Done / Delete kar sakte ho</small></p>
+  <div id="list"></div>
+</div>
+<script>
+let KEY='';
+function login(){ KEY=document.getElementById('pw').value; load(true); }
+async function load(first){
+  const r=await fetch('/api/bookings?key='+encodeURIComponent(KEY));
+  if(!r.ok){ alert('Galat password!'); return; }
+  document.getElementById('loginBox').classList.add('hidden');
+  document.getElementById('panel').classList.remove('hidden');
+  const data=await r.json();
+  document.getElementById('list').innerHTML=data.length?data.map(b=>
+    `<div class="card"><div class="row"><b>${b.name}</b><span class="badge ${b.status}">${b.status}</span></div>
+    📞 ${b.phone} | 🎂 ${b.dob||'—'} | 💼 ${b.service}<br>📝 ${b.message||'—'}<br>
+    <small>${new Date(b.createdAt).toLocaleString('hi-IN')}</small>
+    <div class="row" style="margin-top:8px"><button class="done-btn" onclick="setStatus(${b.id},'done')">✓ Done</button>
+    <button class="del" onclick="del(${b.id})">Delete</button></div></div>`).join('')
+    :'<p>Koi booking nahi hai abhi.</p>';
+}
+async function setStatus(id,status){ await fetch(`/api/bookings/${id}?key=${KEY}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})}); load(); }
+async function del(id){ if(confirm('Delete karein?')){ await fetch(`/api/bookings/${id}?key=${KEY}`,{method:'DELETE'}); load(); } }
+</script></body></html>
