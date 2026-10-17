@@ -59,3 +59,66 @@ document.getElementById('bookForm').addEventListener('submit', async e=>{
     e.target.reset();
   }catch(err){ msg.className='book-msg err'; msg.textContent='❌ '+err.message; }
 });
+
+/* ═══════════ PRODUCT SLIDER (auto + swipe + dots) ═══════════ */
+(function(){
+  const slider = document.getElementById('slider');
+  const track  = document.getElementById('slides');
+  if(!slider || !track) return;
+
+  const total  = track.children.length;
+  const dotsEl = document.getElementById('slDots');
+  const progEl = document.getElementById('slProg');
+  const DELAY  = 5000;
+  let idx = 0, timer = null, startX = 0, dragging = false;
+
+  if(dotsEl){
+    dotsEl.innerHTML = Array.from({length: total}, (_, i) =>
+      `<button class="${i===0?'on':''}" aria-label="Slide ${i+1}" onclick="slideTo(${i})"></button>`).join('');
+  }
+
+  function render(){
+    track.style.transform = `translateX(-${idx*100}%)`;
+    if(dotsEl) [...dotsEl.children].forEach((d,i)=> d.classList.toggle('on', i===idx));
+    restartProgress();
+  }
+  function restartProgress(){
+    if(!progEl) return;
+    progEl.style.transition = 'none';
+    progEl.style.width = '0%';
+    void progEl.offsetWidth;
+    progEl.style.transition = `width ${DELAY}ms linear`;
+    progEl.style.width = '100%';
+  }
+  function go(n){ idx = (n + total) % total; render(); }
+  window.slideTo = go;
+  window.slideGo = n => { go(idx + n); reset(); };
+  function reset(){ clearInterval(timer); timer = setInterval(()=>go(idx+1), DELAY); }
+
+  // pause on hover (desktop only)
+  slider.addEventListener('mouseenter', ()=> clearInterval(timer));
+  slider.addEventListener('mouseleave', reset);
+
+  // touch swipe
+  slider.addEventListener('touchstart', e => { startX = e.touches[0].clientX; dragging = true; clearInterval(timer); }, {passive:true});
+  slider.addEventListener('touchmove',  e => {
+    if(!dragging) return;
+    const dx = e.touches[0].clientX - startX;
+    if(Math.abs(dx) > 55){ go(idx + (dx < 0 ? 1 : -1)); dragging = false; }
+  }, {passive:true});
+  slider.addEventListener('touchend', ()=>{ dragging = false; reset(); }, {passive:true});
+
+  // keyboard
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowLeft')  window.slideGo(-1);
+    if(e.key==='ArrowRight') window.slideGo(1);
+  });
+
+  // only run while visible
+  new IntersectionObserver(entries=>{
+    entries.forEach(en => en.isIntersecting ? reset() : clearInterval(timer));
+  }, {threshold:.15}).observe(slider);
+
+  render();
+})();
+

@@ -180,5 +180,95 @@ h1 em,h2 em{font-style:italic;font-weight:500;color:var(--accent)}
 .wa-float:hover{transform:scale(1.08)}
 /* reveal */
 .reveal{opacity:0;transform:translateY(28px);transition:.8s cubic-bezier(.22,1,.36,1)}.reveal.vis{opacity:1;transform:none}
-@media(max-width:900px){.feat{grid-template-columns:1fr;gap:26px}.calc-grid,.book-grid,.about{grid-template-columns:1fr}.grid6,.rev3{grid-template-columns:1fr 1fr}.nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(23,13,26,.98);flex-direction:column;padding:22px;border-bottom:1px solid var(--line);gap:16px}.nav-links.open{display:flex}.burger{display:block}.f1{position:static;transform:none;margin-top:14px}.f2{position:static;transform:none;margin-top:12px}.nav-cta .btn-dark.sm{display:none}}
-@media(max-width:600px){.grid6,.rev3,.ank-nums{grid-template-columns:1fr}.strip span:last-child{display:none}.r2{grid-template-columns:1fr}.hero{padding-top:56px}}
+
+/* ═══════════ SHOP / PRODUCT SLIDER ═══════════ */
+.shop-wrap{position:relative}
+.slider{position:relative;background:linear-gradient(165deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:28px;box-shadow:var(--sh);overflow:hidden}
+.slides{display:flex;transition:transform .6s cubic-bezier(.22,1,.36,1)}
+.slide{min-width:100%;display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:stretch}
+.slide-img{background:#120A15;display:flex;align-items:center;justify-content:center;padding:22px;min-height:100%}
+.slide-img img{width:100%;max-width:430px;height:auto;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.5);display:block}
+.slide-info{padding:clamp(24px,3.4vw,44px);display:flex;flex-direction:column;gap:12px;justify-content:center}
+.slide-tag{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:500}
+.slide-info h3{font-size:clamp(24px,2.8vw,34px);font-weight:600;color:var(--cream)}
+.slide-info p{color:var(--mut);font-size:14.5px;line-height:1.75;font-weight:300}
+.slide-points{list-style:none;display:grid;gap:7px;font-size:13.5px;color:var(--cream);font-weight:300}
+.slide-points li::before{content:'✦ ';color:var(--accent)}
+.slide-foot{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:8px}
+.slide-price{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--accent)}
+.slide-price s{font-size:15px;color:var(--mut);font-weight:400;margin-left:6px;opacity:.7}
+.sl-btn{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:rgba(23,13,26,.8);backdrop-filter:blur(8px);color:var(--accent);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.25s;z-index:3}
+.sl-btn:hover{background:linear-gradient(135deg,var(--accent),var(--gold));color:#26162B;border-color:transparent}
+.sl-btn.prev{left:14px}.sl-btn.next{right:14px}
+.sl-nav{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px}
+.sl-dots{display:flex;gap:9px}
+.sl-dots button{width:9px;height:9px;border-radius:50%;border:1px solid var(--line);background:transparent;padding:0;cursor:pointer;transition:.25s}
+.sl-dots button.on{background:var(--accent);width:26px;border-radius:999px;border-color:transparent}
+.sl-bar{width:min(340px,70%);height:3px;background:rgba(246,219,192,.14);border-radius:999px;overflow:hidden}
+.sl-prog{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:999px}
+/* touch swipe */
+.slider{touch-action:pan-y}
+
+@media(max-width:900px){
+  .feat{grid-template-columns:1fr;gap:26px}
+  .calc-grid,.book-grid,.about{grid-template-columns:1fr}
+  .grid6,.rev3{grid-template-columns:1fr 1fr}
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(23,13,26,.98);flex-direction:column;padding:22px;border-bottom:1px solid var(--line);gap:16px}
+  .nav-links.open{display:flex}
+  .burger{display:block}
+  .f1{position:static;transform:none;margin-top:14px}
+  .f2{position:static;transform:none;margin-top:12px}
+  .nav-cta .btn-dark.sm{display:none}
+  .slide{grid-template-columns:1fr}
+  .slide-img{padding:20px}
+  .slide-img img{max-width:340px}
+  .slide-info{padding:24px 22px 74px}
+  .sl-btn{top:auto;bottom:14px;transform:none;width:40px;height:40px}
+  .sl-btn.prev{left:16px}.sl-btn.next{right:16px}
+  .sl-bar{display:none}
+}
+
+@media(max-width:600px){
+  .grid6,.rev3,.ank-nums{grid-template-columns:1fr}
+  .r2{grid-template-columns:1fr}
+  .hero{padding-top:56px}
+  .hero h1 br{display:none}
+  .hero-shot .float-card{display:none}
+  .a-stats{flex-wrap:wrap}
+}
+
+/* ═══════════ RESPONSIVE HARDENING (no cut / no overflow) ═══════════ */
+html,body{max-width:100%}
+img{max-width:100%;height:auto}
+h1,h2,h3,.brand-tx,.slide-info h3{overflow-wrap:break-word;word-break:break-word}
+.wrap,.hero,.nav-in,.foot-in,.strip,.trust{width:100%}
+.nav-in,.nav-links,.nav-cta,.brand,.foot-in,.f-brand,.f-links,.f-contact,.slide-foot,.trust-row{min-width:0}
+.pill{flex-wrap:wrap;justify-content:center;text-align:center;max-width:100%;line-height:1.5}
+.shot-bar em{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.a-stats{flex-wrap:wrap}
+.ank9,.ank-nums,.grid6,.rev3,.slide-info,.slide-img{min-width:0}
+.about-card,.about-tx,.panel,.cta,.gcard,.mini-win,.calc-form,.book-form,.book-side{max-width:100%}
+
+@media(max-width:600px){
+  .brand-logo{width:40px;height:40px}
+  .brand-tx{font-size:17px}
+  .brand-tx small{font-size:8.5px;letter-spacing:1.5px}
+  .nav-in{padding:12px 16px;gap:8px}
+  .burger{padding:8px 11px}
+  .hero h1{font-size:clamp(32px,9vw,42px)}
+  .hero-om{font-size:110px}
+  .slide-price{font-size:24px}
+  .slide-foot{gap:10px}
+  .a-stats div{padding:9px 12px}
+  .a-stats b{font-size:17px}
+  .ank-cell b{font-size:28px}
+  .strip{font-size:11px;padding:9px 14px;justify-content:center;text-align:center}
+  .strip span:last-child{display:none}
+  .f1,.f2{display:none}
+}
+@media(max-width:400px){
+  .brand-tx small{display:none}
+  .hero h1{font-size:30px}
+  .slide-info h3{font-size:22px}
+}
+
